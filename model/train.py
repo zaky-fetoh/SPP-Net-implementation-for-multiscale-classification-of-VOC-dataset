@@ -39,8 +39,9 @@ get_trans = lambda s : transf.Compose([
                              (0.229, 0.224, 0.225)),
         ])
 
-def predict( net, img , scales, num_view=10 ):
-    out = t.zeros(1,20)
+def predict( net, img , scales=[150, 174, 200, 224],
+             num_view=10, num_cls=20 ):
+    out = t.zeros(1,num_cls)
     for s in scales:
         trans = get_trans(s)
         ib = t.cat([trans(img) for _ in range(num_view)])
