@@ -58,8 +58,8 @@ def getloader(data_path, scale, batch_size=128,
     return dltr
 
 @torch.no_grad()
-def get_bernoulli_class_dist(dtlr=getloader(TRAIN_SET_LABELS,
-                                            5,batch_size=1000)):
+def get_bernoulli_class_dist(dtlr):#=getloader(TRAIN_SET_LABELS,
+      #                                      5,batch_size=1000)):
     """
     presid = tensor([ 327.,  268.,  395.,  260.,  365.,  213.,  590.,  539.,  566.,  151.,
          269.,  632.,  237.,  265., 1994.,  269.,  171.,  257.,  273.,  290.])
@@ -82,5 +82,6 @@ def get_bernoulli_class_dist(dtlr=getloader(TRAIN_SET_LABELS,
 
 
 if __name__ == '__main__':
-    pres, ts = get_bernoulli_class_dist()
+    pass
+    #pres, ts = get_bernoulli_class_dist()
 

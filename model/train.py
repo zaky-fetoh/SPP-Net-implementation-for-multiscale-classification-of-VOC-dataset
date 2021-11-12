@@ -39,12 +39,16 @@ get_trans = lambda s : transf.Compose([
                              (0.229, 0.224, 0.225)),
         ])
 
-def predict( net, img , scales=[150, 174, 200, 224],
+@t.no_grad()
+def predict( net, im , iso_scale,
+             scales=[150, 174, 200, 224],
              num_view=10, num_cls=20 ):
-    out = t.zeros(1,num_cls)
+    out = t.zeros(num_cls)
     for s in scales:
         trans = get_trans(s)
-        ib = t.cat([trans(img) for _ in range(num_view)])
+        img =  iso_scale(im, s)
+        ib = t.cat([trans(img).unsqueeze(0) for _ in range(num_view)],
+                   dim=0)
         out += net(ib).mean(0)
     return out/len(scales)
 
