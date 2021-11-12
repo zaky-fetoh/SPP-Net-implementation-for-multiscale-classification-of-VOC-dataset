@@ -1,7 +1,9 @@
+import torchvision.transforms as transf
 import torch.nn.functional as f
 import torch.nn as nn
-import torch as t
 from model import *
+import torch as t
+
 
 
 def accuracy(output, target, cls_num=20, trshld=.5):
@@ -25,6 +27,28 @@ def load_model(file_path, model=spp_net()):
     state_dict = t.load(file_path)
     model.load_state_dict(state_dict)
     print('Model loaded', file_path)
+
+get_trans = lambda s : transf.Compose([
+            transf.ToPILImage(),
+            transf.RandomHorizontalFlip(),
+            transf.RandomVerticalFlip(),
+            transf.RandomRotation(20),
+            transf.CenterCrop(s),
+            transf.ToTensor(),
+            transf.Normalize((0.485, 0.456, 0.406),
+                             (0.229, 0.224, 0.225)),
+        ])
+
+def predict( net, img , scales, num_view=10 ):
+    out = t.zeros(1,20)
+    for s in scales:
+        trans = get_trans(s)
+        ib = t.cat([trans(img) for _ in range(num_view)])
+        out += net(ib).mean(0)
+    return out/len(scales)
+
+
+
 
 
 def train_(net, train_loader, criterion, opt_fn,
